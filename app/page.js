@@ -1,66 +1,72 @@
 'use client';
-
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import gh1 from './assets/img/gh1.webp';
-import gh2 from './assets/img/gh2.webp';
+import { useState, useEffect } from 'react';
 
 const slides = [
   {
-    image: gh1,
-    title: 'Elevate your wardrobe',
-    subtitle: 'The best of the season, handpicked by us.',
+    image: '/images/img1.webp',
+    text: (
+      <>
+        <h2 className="text-white text-4xl font-bold">Elevate your wardrobe</h2>
+        <p className="text-white mt-2">The best of the season, handpicked by us</p>
+        <div className="mt-4 space-x-4">
+          <button className="bg-white text-black px-16 py-3 my-4 rounded-md">Shop New Arrivals</button><br />
+          <button className="bg-black text-white px-16 py-3 mx-2 rounded-md">View Lookbook</button>
+        </div>
+      </>
+    ),
+    textAlign: 'left',
   },
   {
-    image: gh2,
-    title: 'Unleash your style',
-    subtitle: 'Fresh arrivals curated just for you.',
+    image: '/images/girll.webp',
+    text: (
+      <>
+        <h2 className="text-white text-4xl font-bold">New styles are here</h2>
+        <p className="text-white mt-2">Shine with our latest must-haves</p>
+        <div className="mt-4 space-x-4">
+          <button className="bg-white text-black px-16 py-3 rounded-md">Shop Spring/Summer</button>
+          <button className="bg-black text-white px-16 py-3 rounded-md">Shop Sale</button>
+        </div>
+      </>
+    ),
+    textAlign: 'center',
   },
 ];
 
-export default function Home() {
-  const [index, setIndex] = useState(0);
+export default function HomeSlider() {
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % slides.length);
+      setCurrent((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="relative w-full h-[80vh] md:h-screen">
-      {/* Fixed Background Image */}
-      <div className="fixed top-0 left-0 w-full h-[80vh] md:h-screen -z-10">
-        <Image
-          src={slides[index].image}
-          alt="Hero Slide"
-          fill
-          className="object-cover object-top transition-all duration-1000 ease-in-out"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/30 z-10" />
-      </div>
-
-     
-      <div className="fixed inset-0 z-10 flex items-center justify-start text-left px-6 md:px-16">
-        <div className="text-white space-y-4 max-w-xl ">
-          <p className="text-sm uppercase tracking-wide">Just Arrived</p>
-          <h1 className="text-4xl md:text-5xl font-bold">
-            <span className="underline decoration-pink-400">{slides[index].title.split(' ')[0]}</span>{' '}
-            {slides[index].title.split(' ').slice(1).join(' ')}
-          </h1>
-          <p className="text-lg">{slides[index].subtitle}</p>
-          <div className="flex space-x-4">
-            <button className="bg-white text-black px-4 py-2 rounded hover:bg-gray-200">
-              Shop New Arrivals
-            </button>
-            <button className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
-              View Lookbook
-            </button>
+    <div className="relative w-full h-[90vh] overflow-hidden rounded-lg">
+      {slides.map((slide, index) => (
+        <div
+          key={index}
+          className={`fixed inset-0 transition-opacity duration-1000 ${
+            index === current ? 'opacity-100 z-10' : 'opacity-0 z-0'
+          }`}
+        >
+          <img
+            src={slide.image}
+            alt={`Slide ${index + 1}`}
+            className="w-full h-full object-cover object-top"
+          />
+          <div
+            className={`absolute inset-0 flex items-center ${
+              slide.textAlign === 'center' ? 'justify-center' : 'justify-start'
+            } px-10`}
+          >
+            <div className={`max-w-xl ${slide.textAlign === 'center' ? 'text-center' : 'text-left'}`}>
+              {slide.text}
+            </div>
           </div>
         </div>
-      </div>
+      ))}
     </div>
   );
 }
